@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Placements volley</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Barlow:wght@400;500&display=swap">
+<style>
+:root{--bg:#E9EEF2;--fg:#13232F;--mut:#5B6B77;--card:#fff;--bd:#CBD5DC;--acc:#13232F;--accfg:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1A26;--fg:#EAF0F4;--mut:#93A4B1;--card:#15293A;--bd:#264257;--acc:#F2D43D;--accfg:#0D1A26}}
+:root[data-theme="dark"]{--bg:#0D1A26;--fg:#EAF0F4;--mut:#93A4B1;--card:#15293A;--bd:#264257;--acc:#F2D43D;--accfg:#0D1A26}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 16px/1.45 Barlow,system-ui,sans-serif}
+main{max-width:600px;margin:0 auto;padding:18px 16px 28px}
+h1{font:700 30px/1.05 'Barlow Condensed',Impact,sans-serif;margin:0 0 6px;letter-spacing:.2px}
+p{margin:0}.mut{color:var(--mut)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;font-size:14px;color:var(--mut)}
+button{font:500 16px Barlow,system-ui,sans-serif;cursor:pointer;border-radius:10px;border:1.5px solid var(--bd);background:var(--card);color:var(--fg);padding:12px 16px}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button.pri{background:var(--acc);color:var(--accfg);border-color:var(--acc);font-weight:700}
+.roles{display:grid;gap:10px;margin-top:22px}
+.roles button{display:flex;align-items:center;gap:14px;text-align:left;padding:14px 16px}
+.roles b{font:700 22px 'Barlow Condensed',sans-serif;display:block}
+.dot{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:700 16px 'Barlow Condensed',sans-serif;color:#111}
+svg{display:block;width:100%;height:auto;border-radius:12px;touch-action:manipulation;cursor:crosshair;margin:14px 0}
+.res{background:var(--card);border:1.5px solid var(--bd);border-radius:12px;padding:14px 16px;display:flex;align-items:center;gap:16px}
+.sc{font:700 52px/1 'Barlow Condensed',sans-serif}
+.res button{margin-left:auto}
+.hint{text-align:center;color:var(--mut);font-size:14px;margin-top:2px}
+.list{margin:16px 0;display:grid;gap:8px}
+.list div{display:flex;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:10px 14px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input,textarea{display:block;width:100%;font:400 16px Barlow,system-ui,sans-serif;color:var(--fg);background:var(--card);border:1.5px solid var(--bd);border-radius:10px;padding:11px 14px;margin-bottom:8px}
+input:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.sm{padding:6px 12px;font-size:14px}
+.chip{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 6px}
+.chip.on{border-color:var(--acc);box-shadow:0 0 0 2px var(--acc)}
+.chip .dot{width:32px;height:32px;font-size:14px}
+#cw svg{touch-action:none}
+button:disabled{opacity:.45;cursor:default}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+var ROLES={A:{k:'R4',n:'Réceptionneur-attaquant',c:'#7BD389'},C:{k:'C',n:'Central',c:'#B88CFF'},P:{k:'P',n:'Pointu',c:'#F0694A'},S:{k:'S',n:'Passeur',c:'#F2D43D'},L:{k:'L',n:'Libéro',c:'#FF9F1C'}};
+var DEF=[{"t":"Attaque adverse en 2","d":"","p":[["C",2.6,0.4],["A",1.4,0.4],["A",4.5,7.7],["P",6.4,5.2],["S",6.2,1.4],["L",0.6,4.5]],"b":[0.6,-0.5]},{"t":"Attaque adverse en 4","d":"","p":[["C",6.1,0.2],["P",7.3,0.2],["A",2.9,1.4],["A",5.4,7.8],["L",2.6,4.8],["S",8.4,4.7]],"b":[8.4,-0.5]},{"t":"Réception service P1","d":"Le passeur est à la position 1 (en bas à droite)","p":[["P",0.5,0.7],["C",2.5,2.2],["A",1.9,5.6],["L",4.6,7.1],["A",7,5.3],["S",7.9,6.9]]},{"t":"Réception service P2","d":"Le passeur est devant à droite","p":[["A",2,5.5],["A",4.5,7],["L",6.9,5.6],["S",5.5,0.7],["C",0.8,1.6],["P",2.8,7.4]]},{"t":"Réception service P3","d":"","p":[["S",5.7,0.8],["C",7.2,2.3],["A",1.9,5.5],["L",4.6,7],["A",7.3,5.8],["P",7,7.5]]},{"t":"Réception service P4","d":"","p":[["P",8.2,7.8],["C",1.6,2.3],["A",2.2,5.5],["A",4.6,7.3],["L",7,5.7],["S",0.7,0.9]]},{"t":"Réception service P5","d":"","p":[["C",0.8,1.3],["S",3,3.1],["P",8,1.9],["A",1.9,5.8],["A",4.5,7.4],["L",6.9,5.9]]},{"t":"Réception service P6","d":"","p":[["C",7.2,3.4],["P",6.6,0.9],["S",5.3,2.3],["A",2.1,5.8],["A",6.9,6.3],["L",4.8,7.5]]},{"t":"ATTAQUE BASE UNE","d":"ALLUME MON CHOUPINOU","p":[["A",1.4,0.6],["C",4.4,0.6],["S",6.3,1.6],["P",7.7,0.7],["A",4.4,6.3],["L",2.3,2]]}];
+var custom=[],SIT;
+try{custom=JSON.parse(localStorage.getItem('pv_sit')||'[]')}catch(e){}
+custom=custom.filter(function(c){return !DEF.some(function(d){return JSON.stringify(d)===JSON.stringify(c)})});
+function rebuild(){SIT=DEF.concat(custom)}rebuild();
+function save(){try{localStorage.setItem('pv_sit',JSON.stringify(custom))}catch(e){}rebuild()}
+var app=document.getElementById('app'),G={};
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function home(){
+ var h='<h1>Placements volley</h1><p class="mut">Choisis ton poste. Pour chaque situation, clique sur le terrain à l\u2019endroit où tu dois te placer.</p><div class="roles">';
+ [['A','r4'],['C','central'],['P','pointu'],['S','passeur'],['L','libéro']].forEach(function(r){var o=ROLES[r[0]],n=SIT.reduce(function(a,x){return a+x.p.filter(function(p){return p[0]===r[0]}).length},0);
+  h+='<button data-r="'+r[0]+'"'+(n?'':' disabled')+'><span class="dot" style="background:'+o.c+'">'+o.k+'</span><span><b>'+o.n+'</b><span class="mut">'+n+' exercice'+(n>1?'s':'')+'</span></span></button>'});
+ h+='</div><div style="margin-top:22px"><button class="pri" id="nw">Créer une situation</button></div>';
+ if(custom.length){h+='<p style="margin-top:22px"><b>Mes situations</b></p><div class="list">';
+  custom.forEach(function(c,i){h+='<div><span>'+esc(c.t)+'</span><span class="row"><button data-e="'+i+'" class="sm">Modifier</button><button data-d="'+i+'" class="sm">Supprimer</button></span></div>'});h+='</div><button id="ex">Exporter mes situations</button>'}
+ app.innerHTML=h;
+ if(custom.length)document.getElementById('ex').onclick=exp;
+ document.getElementById('nw').onclick=function(){editor(-1)};
+ app.querySelectorAll('[data-e]').forEach(function(b){b.onclick=function(){editor(+b.dataset.e)}});
+ app.querySelectorAll('[data-d]').forEach(function(b){b.onclick=function(){custom.splice(+b.dataset.d,1);save();home()}});
+ app.querySelectorAll('[data-r]').forEach(function(b){b.onclick=function(){start(b.dataset.r)}});
+}
+function start(r){
+ var q=[];SIT.forEach(function(s,i){var c=[];s.p.forEach(function(p,k){if(p[0]===r)c.push(k)});var ax=r==='A'?2:1;c.sort(function(a,b){return s.p[a][ax]-s.p[b][ax]});
+  c.forEach(function(k,n){q.push({i:i,t:k,l:c.length>1?(r==='A'?(n?' (R4 arrière)':' (R4 avant)'):(n?' (joueur de droite)':' (joueur de gauche)')):''})})});
+ q.sort(function(){return Math.random()-.5});
+ G={r:r,q:q,i:0,res:[]};show();
+}
+function court(s,ti,placed,sel){
+ var h='<svg id="c" viewBox="-12 -12 114 114" role="img" aria-label="Terrain de volley, côté de ton équipe, filet en haut">'
+ +'<rect x="-12" y="-12" width="114" height="114" fill="#1D4A62"/><rect x="0" y="0" width="90" height="90" fill="#2E7192"/>'
+ +'<g stroke="#fff" stroke-width="1" fill="none"><rect x="0" y="0" width="90" height="90"/><line x1="0" y1="30" x2="90" y2="30"/></g>'
+ +'<rect x="-3" y="-2.4" width="96" height="2.4" rx="1" fill="#fff"/><rect x="-3" y="-3.6" width="1.6" height="4.8" fill="#13232F"/><rect x="91.4" y="-3.6" width="1.6" height="4.8" fill="#13232F"/>';
+ s.p.forEach(function(p,i){if(i===ti)return;var o=ROLES[p[0]];
+  h+='<circle cx="'+p[1]*10+'" cy="'+p[2]*10+'" r="5.2" fill="'+o.c+'" stroke="#0D1A26" stroke-width=".8"/><text x="'+p[1]*10+'" y="'+(p[2]*10+1.9)+'" font-size="5" font-weight="700" text-anchor="middle" fill="#111" font-family="Barlow Condensed,sans-serif">'+o.k+'</text>'});
+ if(s.b)h+='<g transform="translate('+s.b[0]*10+' '+s.b[1]*10+')"><circle r="3.6" fill="#F7F3E3" stroke="#13232F" stroke-width=".8"/><path d="M-3.4 -1Q0 1.2 3.4 -1M-1 -3.4Q1.2 0 -1 3.4" fill="none" stroke="#13232F" stroke-width=".6"/></g>';
+ var sp=sel===-2&&s.b?[0,s.b[0],s.b[1]]:(sel>=0?s.p[sel]:0);
+ if(sp)h+='<circle cx="'+sp[1]*10+'" cy="'+sp[2]*10+'" r="7.4" fill="none" stroke="#fff" stroke-width="1" stroke-dasharray="2 1.5"/>';
+ if(placed){var t=s.p[ti],o=ROLES[t[0]],tx=t[1]*10,ty=t[2]*10;
+  h+='<line x1="'+placed.x+'" y1="'+placed.y+'" x2="'+tx+'" y2="'+ty+'" stroke="#fff" stroke-width=".8" stroke-dasharray="2 2"/>'
+  +'<circle cx="'+tx+'" cy="'+ty+'" r="5.2" fill="'+o.c+'" stroke="#fff" stroke-width="1.2"/><text x="'+tx+'" y="'+(ty+1.9)+'" font-size="5" font-weight="700" text-anchor="middle" fill="#111" font-family="Barlow Condensed,sans-serif">'+o.k+'</text>'
+  +'<circle cx="'+placed.x+'" cy="'+placed.y+'" r="2.2" fill="#fff" stroke="#0D1A26" stroke-width=".8"/>';}
+ return h+'</svg>';
+}
+function show(){var e=G.q[G.i];G.ti=e.t;G.placed=null;draw(SIT[e.i])}
+function draw(s){
+ var o=ROLES[G.r],n=G.q.length,pl=G.placed;
+ var h='<div class="top"><button id="bk" style="padding:6px 12px;font-size:14px">Changer de poste</button><span>'+o.n+' · '+(G.i+1)+'/'+n+'</span></div>'
+ +'<h1>'+esc(s.t+G.q[G.i].l)+'</h1><p class="mut">'+esc(s.d)+'</p>'+court(s,G.ti,pl);
+ if(pl){var last=G.i===n-1;
+  h+='<div class="res"><div class="sc">'+pl.score+'</div><div><b>'+pl.msg+'</b><p class="mut">À '+pl.d.toFixed(1).replace('.',',')+' m de la position attendue</p></div><button class="pri" id="nx">'+(last?'Voir le bilan':'Situation suivante')+'</button></div>';
+ } else h+='<p class="hint">Tu es le '+o.n.toLowerCase()+' : touche le terrain pour te placer.</p>';
+ app.innerHTML=h;
+ document.getElementById('bk').onclick=home;
+ if(pl){document.getElementById('nx').onclick=function(){G.i++;G.i<n?show():end()}}
+ else document.getElementById('c').onclick=click;
+}
+function click(e){
+ var svg=e.currentTarget,pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+ var m=pt.matrixTransform(svg.getScreenCTM().inverse()),s=SIT[G.q[G.i].i],t=s.p[G.ti];
+ var x=Math.max(-8,Math.min(98,m.x)),y=Math.max(1,Math.min(98,m.y));
+ var d=Math.hypot(x-t[1]*10,y-t[2]*10)/10,sc=Math.round(100*Math.exp(-Math.pow(d/2.5,2)));
+ var msg=sc>=85?'Placement juste':sc>=60?'Proche de la bonne position':sc>=30?'À corriger':'Loin de ta zone';
+ G.placed={x:x,y:y,d:d,score:sc,msg:msg};G.res.push({t:s.t+G.q[G.i].l,sc:sc});draw(s);
+}
+function end(){
+ var avg=Math.round(G.res.reduce(function(a,r){return a+r.sc},0)/G.res.length);
+ var h='<div class="top"><span>'+ROLES[G.r].n+'</span></div><h1>Bilan : '+avg+' / 100</h1><p class="mut">Précision moyenne sur '+G.res.length+' situations.</p><div class="list">';
+ G.res.forEach(function(r){h+='<div><span>'+esc(r.t)+'</span><b>'+r.sc+'</b></div>'});
+ h+='</div><div class="row"><button class="pri" id="rp">Rejouer ce poste</button><button id="ch">Changer de poste</button></div>';
+ app.innerHTML=h;
+ document.getElementById('rp').onclick=function(){start(G.r)};
+ document.getElementById('ch').onclick=home;
+}
+function exp(){
+ app.innerHTML='<div class="top"><button id="bk" class="sm">Retour</button></div><h1>Exporter mes situations</h1><p class="mut" style="margin-bottom:12px">Copie ce texte pour le coller dans la conversation avec Claude ou le garder en sauvegarde.</p><textarea id="tx" readonly rows="10"></textarea><button class="pri" id="cp">Copier</button>';
+ var t=document.getElementById('tx');t.value=JSON.stringify(custom);
+ document.getElementById('cp').onclick=function(){t.select();try{navigator.clipboard.writeText(t.value)}catch(e){}try{document.execCommand('copy')}catch(e){}this.textContent='Copié'};
+ document.getElementById('bk').onclick=home;
+}
+var MAX={A:2,C:2,P:1,S:1,L:1};
+function editor(idx){
+ var s=idx>=0?JSON.parse(JSON.stringify(custom[idx])):{t:'',d:'',p:[]},sel=-1,tool='A',drag=false;
+ app.innerHTML='<div class="top"><button id="bk" class="sm">Annuler</button><span>'+(idx>=0?'Modifier':'Nouvelle')+' situation</span></div>'
+ +'<input id="ti" placeholder="Titre de la situation" maxlength="80"><input id="de" placeholder="Description (facultatif)" maxlength="140">'
+ +'<div class="row" id="pal" style="margin:12px 0 0"></div><div id="cw"></div>'
+ +'<p class="hint">Choisis un rôle (ou le ballon), touche le terrain pour l\u2019ajouter, glisse un joueur pour le déplacer. Maximum 6 joueurs.</p>'
+ +'<p id="er" class="mut" style="margin:8px 0"></p><div class="row"><button id="rm">Supprimer la sélection</button><button class="pri" id="sv">Enregistrer</button></div>';
+ var ti=document.getElementById('ti'),de=document.getElementById('de'),cw=document.getElementById('cw'),pal=document.getElementById('pal'),er=document.getElementById('er');
+ ti.value=s.t;de.value=s.d;
+ function cnt(k){return s.p.filter(function(p){return p[0]===k}).length}
+ function ref(){
+  cw.innerHTML=court(s,-1,null,sel);
+  pal.innerHTML=Object.keys(ROLES).map(function(k){var o=ROLES[k];return '<button class="chip'+(k===tool?' on':'')+'" data-k="'+k+'"><span class="dot" style="background:'+o.c+'">'+o.k+'</span>'+cnt(k)+'/'+MAX[k]+'</button>'}).join('')+'<button class="chip'+(tool==='B'?' on':'')+'" data-k="B"><span class="dot" style="background:#F7F3E3">🏐</span>'+(s.b?1:0)+'/1</button>';
+  pal.querySelectorAll('[data-k]').forEach(function(b){b.onclick=function(){tool=b.dataset.k;ref()}});
+ }
+ function pt(e){var v=cw.querySelector('svg'),q=v.createSVGPoint();q.x=e.clientX;q.y=e.clientY;var m=q.matrixTransform(v.getScreenCTM().inverse());
+  return [Math.max(-8,Math.min(98,m.x)),Math.max(-8,Math.min(98,m.y))]}
+ function cl(v){return Math.round(Math.max(0,Math.min(90,v)))/10}
+ cw.onpointerdown=function(e){var c=pt(e),h=-1,best=7;
+  s.p.forEach(function(p,i){var d=Math.hypot(p[1]*10-c[0],p[2]*10-c[1]);if(d<best){best=d;h=i}});
+  if(s.b){var d=Math.hypot(s.b[0]*10-c[0],s.b[1]*10-c[1]);if(d<best){best=d;h=-2}}
+  er.textContent='';
+  if(h!==-1){sel=h;drag=true;try{cw.setPointerCapture(e.pointerId)}catch(x){}}
+  else if(tool==='B'){if(s.b){sel=-1;er.textContent='Il n\u2019y a qu\u2019un ballon.'}else{s.b=[Math.round(c[0])/10,Math.round(c[1])/10];sel=-2}}
+  else if(cnt(tool)<MAX[tool]&&s.p.length<6){s.p.push([tool,cl(c[0]),cl(c[1])]);sel=s.p.length-1}
+  else{sel=-1;er.textContent=s.p.length>=6?'Il y a déjà 6 joueurs.':'Il n\u2019y a plus de place pour ce rôle.'}
+  ref()};
+ cw.onpointermove=function(e){if(!drag||sel===-1)return;var c=pt(e);if(sel===-2){s.b=[Math.round(c[0])/10,Math.round(c[1])/10]}else{s.p[sel][1]=cl(c[0]);s.p[sel][2]=cl(c[1])}ref()};
+ cw.onpointerup=function(){drag=false};
+ document.getElementById('rm').onclick=function(){if(sel===-2){delete s.b;sel=-1;ref()}else if(sel>=0){s.p.splice(sel,1);sel=-1;ref()}};
+ document.getElementById('bk').onclick=home;
+ document.getElementById('sv').onclick=function(){
+  s.t=ti.value.trim();s.d=de.value.trim();
+  if(!s.t){er.textContent='Donne un titre à la situation.';return}
+  if(!s.p.length){er.textContent='Ajoute au moins un joueur.';return}
+  if(idx>=0)custom[idx]=s;else custom.push(s);save();home()};
+ ref();
+}
+home();
+</script>
+</body>
+</html>
